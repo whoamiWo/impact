@@ -70,7 +70,16 @@ discuss the design in an issue before implementing; interfaces are expected to c
 4. `npm pack --dry-run` and `npm run smoke:pack` (installs the tarball into a temp project).
 5. Re-run `npm run bench` and update `docs/benchmark.md` if performance-relevant code changed.
 6. Confirm the npm package name is still available before the first publish.
-7. Tag the release; publish only after CI is green on Node 20 and 22.
+7. **npm identity gate**:
+   - Package name: `@whoamiwo/impact`
+   - Registry: `https://registry.npmjs.org`
+   - Verify current npm account appears in package maintainers with publish rights:
+     ```bash
+     npm whoami --registry https://registry.npmjs.org
+     npm view @whoamiwo/impact maintainers --registry https://registry.npmjs.org
+     ```
+   - The account name does not need to match the package scope (`@whoamiwo`); any account listed as a maintainer can publish.
+8. Tag the release; publish only after CI is green on Node 20 and 22.
 
 ## Security issues
 

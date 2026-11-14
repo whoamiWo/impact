@@ -1,0 +1,68 @@
+name: Bug report
+description: Report incorrect impact results, a crash, or a non-zero exit code.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. This tool is local-first: do not paste tokens, private source, or machine paths.
+  - type: input
+    id: version
+    attributes:
+      label: Impact version
+      description: Output of `npx @whoamiwo/impact@0.1.0 --version`.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: package-manager
+    attributes:
+      label: Package manager
+      options:
+        - npm
+        - pnpm
+        - yarn
+        - bun
+        - other
+    validations:
+      required: true
+  - type: input
+    id: base-head
+    attributes:
+      label: Base and head refs
+      description: The `--base` and `--head` values you used.
+      placeholder: "main / feat-branch"
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Sanitized `impact.config.*` or relevant `package.json` fields.
+      render: yaml
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected output
+      description: Which packages/tests/deployables should have been reported, and why.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual output
+      description: Relevant command output. Use `--format json` when possible; omit absolute paths.
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: repro
+    attributes:
+      label: Public reproduction
+      description: Link to a public repository or minimal reproduction, if available.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Exit code, OS, Node version, cache state, and any warnings.
