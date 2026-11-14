@@ -1,0 +1,65 @@
+{
+  "name": "@whoamiwo/impact",
+  "version": "0.1.0",
+  "description": "Local-first monorepo change impact analysis CLI. Read-only: computes affected packages, test suggestions and deployables from git diff.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "keywords": [
+    "monorepo",
+    "change-impact",
+    "affected",
+    "dependency-graph",
+    "ci",
+    "cli"
+  ],
+  "bin": {
+    "impact": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoamiWo/impact.git"
+  },
+  "homepage": "https://github.com/whoamiWo/impact#readme",
+  "bugs": {
+    "url": "https://github.com/whoamiWo/impact/issues"
+  },
+  "author": "whoamiWo <whoami@wo.cn>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:no-network": "node scripts/check-no-network.mjs",
+    "bench": "node scripts/bench.mjs",
+    "smoke:pack": "node scripts/smoke-pack.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "picomatch": "^4.0.2",
+    "typescript": "^5.6.3",
+    "yaml": "^2.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/picomatch": "^2.3.3",
+    "vitest": "^2.1.4"
+  }
+}
