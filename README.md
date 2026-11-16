@@ -1,6 +1,63 @@
 # impact
 
+[![CI](https://github.com/whoamiWo/impact/actions/workflows/ci.yml/badge.svg)](https://github.com/whoamiWo/impact/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/%40whoamiwo%2Fimpact)](https://www.npmjs.com/package/@whoamiwo/impact)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
 Local-first change impact analysis for JavaScript/TypeScript workspace monorepos.
+
+## Quick start
+
+Requires Node.js >= 20 and a git repository using pnpm, npm, yarn or bun workspaces.
+
+```bash
+npm install --save-dev @whoamiwo/impact
+npx impact analyze
+```
+
+Or run the published package without installing it:
+
+```bash
+npx @whoamiwo/impact@0.1.1 analyze
+```
+
+For a reproducible CI range, select the commits explicitly:
+
+```bash
+npx impact analyze --base origin/main --head HEAD --no-working
+```
+
+`impact` reads the git diff, workspace manifests and source imports. It does not run tests,
+builds or deployments, access the network, collect telemetry, or modify your repository apart
+from the optional `.git/impact-cache/v1/` cache. See [Privacy](#privacy) and
+[Known limitations](#known-limitations).
+
+### Example: one change, a dependent and its checks
+
+For this workspace, `@repo/web` imports `@repo/ui`; only
+`packages/ui/src/button.tsx` changed:
+
+```text
+impact: origin/main (12345678) .. HEAD (abcdef12)
+changed files: 1  affected packages: 2/42  deployables: 1
+
+Affected packages:
+  @repo/ui [direct, high]
+    - changed: packages/ui/src/button.tsx
+    test: pnpm --filter @repo/ui run test
+  @repo/web [dependent, high]
+    - depends on @repo/ui via @repo/ui -> @repo/web
+    test: pnpm --filter @repo/web run test
+
+Deployables:
+  web (affected)
+    - package @repo/web
+```
+
+The configured deployable named `web` maps to `@repo/web`. This is the analysis output, not
+commands that `impact` executed. Use `--format json` for the
+complete, stable machine-readable result, including each package's reasons and dependency chain.
+See [Output](#output) for a JSON example and [GitHub Actions](#github-actions) for matrix output.
 
 `impact` reads a git diff plus your workspace manifests and source files, then reports:
 
@@ -36,27 +93,19 @@ Does not:
 - A PR CI step that needs an executable test matrix without adopting a task runner.
 - Repositories that use pnpm/npm/yarn/bun workspaces and want impact analysis without migrating build tooling.
 
-## Quick start
+## How it fits with other tools
 
-```bash
-npm install
-npm run build
-npx . --help
-```
+`impact` is an analysis CLI, not a replacement for a task runner or build system. You can use its
+JSON or GitHub Actions matrix alongside the tools below.
 
-Run inside a git workspace monorepo:
+| Approach | What it provides | Relationship to `impact` |
+| --- | --- | --- |
+| [Nx](https://nx.dev/ci/features/affected) and [Turborepo](https://turborepo.com/docs/crafting-your-repository/using-affected) | Task running, build orchestration and affected-project selection | `impact` does not read their configuration or run tasks; it can provide independent, reasoned analysis in the same workspace. |
+| [Pants](https://www.pantsbuild.org/stable/docs/using-pants/advanced-target-selection) and [Bazel](https://bazel.build/query/guide) | Target-level graph and build-system capabilities | `impact` uses workspace manifests and JS/TS imports; adopting Pants or Bazel is not required. |
+| [GitHub path filters](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpushpull_requestpull_request_targetpathspaths-ignore) | File glob matching for workflow triggers | `impact` additionally propagates changes through workspace dependency and source-import edges. |
 
-```bash
-node dist/cli.js
-node dist/cli.js --format json
-```
-
-As a package (after publishing or `npm link`):
-
-```bash
-impact
-impact analyze --base "$BASE_SHA" --head "$HEAD_SHA" --no-working --format json
-```
+These links describe the tools' documented behavior; consult their current documentation for
+configuration and version-specific details.
 
 ## CLI
 
@@ -169,10 +218,12 @@ All arrays are sorted; output contains no timestamps or absolute paths, so the s
 With `--verbose`, `stats` also contains `cache` (`hit`, `filesHashed`, `filesReused`); default output
 omits it so cache modes stay byte-identical.
 
+A trimmed JSON result for the example above (the `@repo/ui` package is omitted for brevity):
+
 ```json
 {
   "schemaVersion": 1,
-  "tool": { "name": "impact", "version": "0.1.0" },
+  "tool": { "name": "impact", "version": "0.1.1" },
   "diff": {
     "base": "origin/main",
     "baseSha": "…",
@@ -200,13 +251,15 @@ omits it so cache modes stay byte-identical.
       "testFiles": []
     }
   ],
-  "deployables": [],
+  "deployables": [
+    { "name": "web", "packages": ["@repo/web"], "affected": true, "reasons": [{ "type": "package", "package": "@repo/web" }] }
+  ],
   "warnings": [],
   "stats": {
     "changedFiles": 1,
     "packagesTotal": 42,
-    "packagesAffected": 1,
-    "deployablesAffected": 0,
+    "packagesAffected": 2,
+    "deployablesAffected": 1,
     "sourceFilesParsed": 120
   }
 }
@@ -227,6 +280,28 @@ lists the conflicting directories, because the package graph is keyed by name.
 
 Default behavior is conservative: it prefers over-reporting to silently missing a dependent.
 Use `--depth direct`, `ignoreGlobs`, `alwaysAffected` and `lockfiles: ignore` to narrow results.
+
+## Validation
+
+The [v0.1.0 release notes](https://github.com/whoamiWo/impact/releases/tag/v0.1.0#user-content-real-world-validation-post-release)
+record public, post-release analyses of two real workspaces using the published npm package:
+
+- [zod](https://github.com/colinhacks/zod): a committed range with direct and global impacts, test
+  suggestions, warnings and cache-mode output comparison. This is a real CLI run, not an upstream
+  project endorsement.
+- [Turborepo](https://github.com/vercel/turbo): pnpm workspace negation, dependency propagation
+  and the `apps/*` deployable fallback, including warnings for unresolved imports and unowned
+  non-JS/TS files.
+
+The release notes include repository URLs, base/head commits, result summaries and limitations;
+no missed JS/TS dependents were identified in those runs. These are examples, not evidence of
+complete coverage for every workspace. Report a public reproduction for incorrect results through
+[a bug report](https://github.com/whoamiWo/impact/issues/new?template=bug_report.yml).
+
+For performance context, [docs/benchmark.md](docs/benchmark.md) provides a reproducible synthetic
+1000-package, 20,000-source-file fixture. Three cache-hit samples on the documented Linux WSL2 /
+i7-12700H / Node 22 host were 2433, 2636 and 2809 ms (median 2636 ms, range 2433–2809 ms). These
+machine-specific samples are not a performance guarantee for other repositories.
 
 ## Known limitations
 

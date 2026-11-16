@@ -1,6 +1,6 @@
 {
   "name": "@whoamiwo/impact",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local-first monorepo change impact analysis CLI. Read-only: computes affected packages, test suggestions and deployables from git diff.",
   "type": "module",
   "license": "Apache-2.0",

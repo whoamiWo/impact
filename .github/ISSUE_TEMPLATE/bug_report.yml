@@ -11,8 +11,8 @@ body:
     id: version
     attributes:
       label: Impact version
-      description: Output of `npx @whoamiwo/impact@0.1.0 --version`.
-      placeholder: "0.1.0"
+      description: Output of `npx @whoamiwo/impact --version`.
+      placeholder: "Run npx @whoamiwo/impact --version"
     validations:
       required: true
   - type: dropdown

@@ -8,6 +8,17 @@ versions may include behavior changes; JSON schema additions stay additive.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-16
+
+Docs/metadata only; no runtime behavior change.
+
+### Docs
+
+- Move published-package installation and a diff-to-impact example to the README quick start.
+- Add neutral comparisons with task runners, build systems and GitHub path filters.
+- Link the public real-workspace validation and its limitations; add release badges and CI context.
+- Remove the hard-coded version from the bug report template.
+
 ## [0.1.0] - 2026-11-14
 
 Initial public baseline.
