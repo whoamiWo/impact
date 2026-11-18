@@ -81,6 +81,13 @@ discuss the design in an issue before implementing; interfaces are expected to c
    - The account name does not need to match the package scope (`@whoamiwo`); any account listed as a maintainer can publish.
 8. Tag the release; publish only after CI is green on Node 20 and 22.
 
+## Branch protection
+
+The `main-protection` ruleset blocks branch deletion and non-fast-forward pushes and requires the
+`test (20)` and `test (22)` checks. It deliberately does not require pull requests. Repository
+administrators can bypass the ruleset, and required status checks mainly gate pull request merges:
+a direct push can land before CI finishes, so wait for a green run before tagging.
+
 ## Security issues
 
 Do not open public issues for vulnerabilities. See `SECURITY.md`.
