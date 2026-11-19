@@ -18,7 +18,7 @@ npx impact analyze
 Or run the published package without installing it:
 
 ```bash
-npx @whoamiwo/impact@0.1.1 analyze
+npx @whoamiwo/impact@0.1.2 analyze
 ```
 
 For a reproducible CI range, select the commits explicitly:
@@ -223,7 +223,7 @@ A trimmed JSON result for the example above (the `@repo/ui` package is omitted f
 ```json
 {
   "schemaVersion": 1,
-  "tool": { "name": "impact", "version": "0.1.1" },
+  "tool": { "name": "impact", "version": "0.1.2" },
   "diff": {
     "base": "origin/main",
     "baseSha": "…",

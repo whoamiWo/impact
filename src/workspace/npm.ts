@@ -9,14 +9,14 @@ const pkgJsonSchema = z
   .object({
     name: z.string().optional(),
     private: z.boolean().optional(),
-    scripts: z.record(z.string()).optional(),
+    scripts: z.record(z.string(), z.string()).optional(),
     workspaces: z
       .union([z.array(z.string()), z.object({ packages: z.array(z.string()) })])
       .optional(),
-    dependencies: z.record(z.string()).optional(),
-    devDependencies: z.record(z.string()).optional(),
-    optionalDependencies: z.record(z.string()).optional(),
-    peerDependencies: z.record(z.string()).optional(),
+    dependencies: z.record(z.string(), z.string()).optional(),
+    devDependencies: z.record(z.string(), z.string()).optional(),
+    optionalDependencies: z.record(z.string(), z.string()).optional(),
+    peerDependencies: z.record(z.string(), z.string()).optional(),
   })
   .passthrough();
 

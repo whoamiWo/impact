@@ -24,7 +24,7 @@ const configSchema = z
         exclude: z.array(z.string()).optional().default([]),
       })
       .optional()
-      .default({ exclude: [] }),
+      .prefault({}),
     source: z
       .object({
         enabled: z.boolean().optional().default(true),
@@ -44,7 +44,7 @@ const configSchema = z
         maxFileBytes: z.number().int().positive().optional().default(1_048_576),
       })
       .optional()
-      .default({}),
+      .prefault({}),
     graph: z
       .object({
         devDependencies: z.boolean().optional().default(true),
@@ -52,7 +52,7 @@ const configSchema = z
         peerDependencies: z.boolean().optional().default(false),
       })
       .optional()
-      .default({}),
+      .prefault({}),
     impact: z
       .object({
         unowned: z.enum(["global", "warn", "ignore"]).optional().default("global"),
@@ -73,12 +73,12 @@ const configSchema = z
           .default(["**/*.md", "**/*.mdx", "docs/**", ".github/**"]),
       })
       .optional()
-      .default({}),
+      .prefault({}),
     tests: z
       .object({
         scripts: z.array(z.string()).optional().default(["test"]),
         commands: z
-          .record(z.union([z.string(), z.array(z.string())]))
+          .record(z.string(), z.union([z.string(), z.array(z.string())]))
           .optional()
           .default({}),
         include: z
@@ -88,7 +88,7 @@ const configSchema = z
         maxFiles: z.number().int().positive().optional().default(500),
       })
       .optional()
-      .default({}),
+      .prefault({}),
     deployables: z.array(deployableSchema).optional().default([]),
   })
   .strict();

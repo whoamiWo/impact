@@ -8,6 +8,33 @@ versions may include behavior changes; JSON schema additions stay additive.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-19
+
+Dependency and CI maintenance patch. CLI output, JSON shape and `schemaVersion: 1` are unchanged.
+
+### Security
+
+- Upgrade `zod` from 3.x to 4.6.7, fixing the runtime advisory GHSA-mrhx-c7xc-m3w5
+  (CVE-2023-54404: oversized arrays could exhaust memory). Config parsing now uses `prefault`
+  and two-argument `z.record`; accepted config structure, section defaults, `.strict()`
+  rejection and `version: 1` semantics are unchanged.
+- Upgrade `vitest` from 2.x to 5.1.1, clearing the dev-only test-server advisories
+  GHSA-5xrq-8626-4rwp and GHSA-9crc-q9x8-hgqq. CI runs `vitest run` only, so these servers
+  were never part of the published CLI.
+- After this release, both `npm audit --omit=dev` (runtime) and full `npm audit` report no
+  known vulnerabilities.
+
+### Changed
+
+- Upgrade CI actions to `actions/checkout` v7.0.1 and `actions/setup-node` v7.1.0, pinned by
+  commit SHA. `permissions: contents: read` and the check names `test (20)` / `test (22)` are
+  unchanged.
+- Upgrade `@types/picomatch` to 4.x (development types only).
+- Group Dependabot npm and GitHub Actions minor/patch updates and ignore major updates for
+  `typescript` (runtime compiler API) and `@types/node` (Node 20/22 support range).
+- Keep TypeScript on 5.9.x; TypeScript 7 does not expose the compiler API used by the source
+  graph.
+
 ## [0.1.1] - 2026-11-16
 
 Docs/metadata only; no runtime behavior change.

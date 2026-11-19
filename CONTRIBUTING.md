@@ -67,6 +67,9 @@ discuss the design in an issue before implementing; interfaces are expected to c
 1. Bump `version` in `package.json` (the CLI and JSON output read it from there).
 2. Update `CHANGELOG.md`; keep JSON schema changes additive.
 3. `npm run typecheck`, `npm test`, `npm run check:no-network`.
+   Then run `npm audit --omit=dev` for runtime dependencies and `npm audit` for the full tree.
+   Dev-only advisories in test tooling are not part of the published CLI, but they still need to
+   be recorded when the release notes claim a clean audit.
 4. `npm pack --dry-run` and `npm run smoke:pack` (installs the tarball into a temp project).
 5. Re-run `npm run bench` and update `docs/benchmark.md` if performance-relevant code changed.
 6. Confirm the npm package name is still available before the first publish.

@@ -1,6 +1,6 @@
 {
   "name": "@whoamiwo/impact",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Local-first monorepo change impact analysis CLI. Read-only: computes affected packages, test suggestions and deployables from git diff.",
   "type": "module",
   "license": "Apache-2.0",
@@ -53,13 +53,13 @@
   },
   "dependencies": {
     "picomatch": "^4.0.2",
-    "typescript": "^5.6.3",
+    "typescript": "^5.9.3",
     "yaml": "^2.6.0",
-    "zod": "^3.23.8"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^22.9.0",
-    "@types/picomatch": "^2.3.3",
-    "vitest": "^2.1.4"
+    "@types/picomatch": "^4.0.3",
+    "vitest": "^5.1.1"
   }
 }

@@ -5,8 +5,24 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # Impact imports the TypeScript compiler API at runtime; TS majors are
+      # evaluated manually until the AST usage is validated against them.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      # Keep @types/node aligned with the supported Node range (>=20, CI 20/22).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      actions-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
